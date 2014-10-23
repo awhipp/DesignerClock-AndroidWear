@@ -2,11 +2,13 @@ package com.whipp.hsiao.designerclock;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.wearable.view.WatchViewStub;
+import android.view.View;
 import android.widget.TextView;
 
 import java.util.Calendar;
@@ -18,12 +20,14 @@ public class MainClock extends Activity {
     private TextView clockText;
     private WatchViewStub stub;
     private SharedPreferences prefs;
+    private Context context;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_clock);
         stub = (WatchViewStub) findViewById(R.id.watch_view_stub);
         prefs = PreferenceManager.getDefaultSharedPreferences(this.getApplicationContext());
+        context = this;
         stub.setOnLayoutInflatedListener(new WatchViewStub.OnLayoutInflatedListener() {
             public void onLayoutInflated(WatchViewStub stub) {
                 clockText = (TextView) stub.findViewById(R.id.text);
@@ -31,8 +35,19 @@ public class MainClock extends Activity {
         });
 
         new UpdateClock().execute(this);
+        stub.setOnClickListener(new View.OnClickListener() {
 
+            public void onClick(View v) {
+                Intent myIntent = new Intent(context, Settings.class);
+                context.startActivity(myIntent);
+            }
+        });
     }
+
+
+    /*
+     *
+     */
 
     private class UpdateClock extends AsyncTask<Context, Integer, Boolean> {
 
