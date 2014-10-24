@@ -33,6 +33,7 @@ public class MainClock extends Activity {
                 clockText = (TextView) stub.findViewById(R.id.text);
             }
         });
+        stub.inflate();
 
         new UpdateClock().execute(this);
         stub.setOnClickListener(new View.OnClickListener() {
@@ -52,7 +53,6 @@ public class MainClock extends Activity {
     private class UpdateClock extends AsyncTask<Context, Integer, Boolean> {
 
         protected Boolean doInBackground(Context... context) {
-            clockText = (TextView) stub.findViewById(R.id.text);
             new Timer().scheduleAtFixedRate(new TimerTask(){
                 public void run() {
                     runOnUiThread(new Runnable(){
