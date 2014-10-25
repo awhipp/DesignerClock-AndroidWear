@@ -7,7 +7,9 @@
     <string name="basic">Basic\nClock</string>
     <string name="fancy">Fancy\nClock</string>
     <string name="back">Back to Clock</string>
-
     <string name="title_activity_settings">Settings</string>
+    <string name="title_activity_design_clock">DesignClock</string>
+    <string name="hello_round">Hello Round World!</string>
+    <string name="hello_square">Hello Square World!</string>
 
 </resources>

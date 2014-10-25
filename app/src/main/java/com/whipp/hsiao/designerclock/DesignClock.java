@@ -15,7 +15,7 @@ import java.util.Calendar;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class MainClock extends Activity {
+public class DesignClock extends Activity {
 
     private TextView clockText;
     private WatchViewStub stub;
@@ -71,7 +71,7 @@ public class MainClock extends Activity {
                             }
                             int minute = time.get(Calendar.MINUTE);
                             int sec = time.get(Calendar.SECOND);
-                            clockText.setText(hour + ":" + String.format("%02d", minute) + ":" + String.format("%02d", sec));
+                            clockText.setText("Fancy Clock:\n" + hour + ":" + String.format("%02d", minute) + ":" + String.format("%02d", sec));
                             if(mode.equals("12"))
                                 if(time.get(Calendar.HOUR_OF_DAY) < 12){
                                     clockText.append(" AM");
