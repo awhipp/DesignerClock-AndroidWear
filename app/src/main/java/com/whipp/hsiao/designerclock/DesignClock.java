@@ -11,26 +11,31 @@ import android.support.wearable.view.WatchViewStub;
 import android.view.View;
 import android.widget.TextView;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 
 public class DesignClock extends Activity {
 
     private TextView clockText;
+    private TextView dateText;
     private WatchViewStub stub;
     private SharedPreferences prefs;
     private Context context;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main_clock);
+        setContentView(R.layout.activity_design_clock);
         stub = (WatchViewStub) findViewById(R.id.watch_view_stub);
         prefs = PreferenceManager.getDefaultSharedPreferences(this.getApplicationContext());
         context = this;
         stub.setOnLayoutInflatedListener(new WatchViewStub.OnLayoutInflatedListener() {
             public void onLayoutInflated(WatchViewStub stub) {
-                clockText = (TextView) stub.findViewById(R.id.text);
+                clockText = (TextView) stub.findViewById(R.id.clock);
+                dateText = (TextView) stub.findViewById(R.id.date);
+
             }
         });
         stub.inflate();
@@ -47,14 +52,9 @@ public class DesignClock extends Activity {
         });
     }
 
-
-    /*
-     *
-     */
-
     private class UpdateClock extends AsyncTask<Context, Integer, Boolean> {
 
-        protected Boolean doInBackground(Context... context) {
+        protected Boolean doInBackground(final Context... context) {
             new Timer().scheduleAtFixedRate(new TimerTask(){
                 public void run() {
                     runOnUiThread(new Runnable(){
@@ -71,7 +71,13 @@ public class DesignClock extends Activity {
                             }
                             int minute = time.get(Calendar.MINUTE);
                             int sec = time.get(Calendar.SECOND);
-                            clockText.setText("Fancy Clock:\n" + hour + ":" + String.format("%02d", minute) + ":" + String.format("%02d", sec));
+                            SimpleDateFormat sdf = new SimpleDateFormat("EEEE");
+                            Date d = new Date();
+                            String day = sdf.format(d);
+                            sdf = new SimpleDateFormat("MM/dd/yyyy");
+                            String date = sdf.format(d);
+                            dateText.setText("Designed Clock");
+                            clockText.setText(hour + ":" + String.format("%02d", minute) + ":" + String.format("%02d", sec));
                             if(mode.equals("12"))
                                 if(time.get(Calendar.HOUR_OF_DAY) < 12){
                                     clockText.append(" AM");

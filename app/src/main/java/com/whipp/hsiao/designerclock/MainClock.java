@@ -30,6 +30,12 @@ public class MainClock extends Activity {
         setContentView(R.layout.activity_main_clock);
         stub = (WatchViewStub) findViewById(R.id.watch_view_stub);
         prefs = PreferenceManager.getDefaultSharedPreferences(this.getApplicationContext());
+
+        if (prefs.getString("clock", "basic").equals("fancy")){
+            Intent myIntent = new Intent(this, DesignClock.class);
+            this.startActivity(myIntent);
+        }
+
         context = this;
         stub.setOnLayoutInflatedListener(new WatchViewStub.OnLayoutInflatedListener() {
             public void onLayoutInflated(WatchViewStub stub) {
@@ -51,11 +57,6 @@ public class MainClock extends Activity {
             }
         });
     }
-
-
-    /*
-     *
-     */
 
     private class UpdateClock extends AsyncTask<Context, Integer, Boolean> {
 
