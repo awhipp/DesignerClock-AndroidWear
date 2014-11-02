@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    tools:context="com.whipp.hsiao.designerclock.Settings"
+    tools:deviceIds="wear_round">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        >
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="50dp">
+
+            <CheckBox
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/standard"
+                android:id="@+id/radio12"
+                android:onClick="standardClick"/>
+
+            <CheckBox
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/military"
+                android:id="@+id/radio24"
+                android:onClick="militaryClick"/>
+        </LinearLayout>
+
+        <TableRow
+            android:layout_width="fill_parent"
+            android:layout_height="10dp"></TableRow>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <CheckBox
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/basic"
+                android:id="@+id/basic_radio"
+                android:onClick="basicClick"/>
+
+            <CheckBox
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/fancy"
+                android:id="@+id/fancy_radio"
+                android:onClick="fancyClick"/>
+        </LinearLayout>
+
+        <Button
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/back"
+            android:id="@+id/back_button"
+            android:onClick="backClick"/>
+    </LinearLayout>
+
+
+</RelativeLayout>
