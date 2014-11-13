@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.wearable.view.WatchViewStub;
 import android.view.View;
@@ -24,6 +25,7 @@ public class DesignClock extends Activity {
     private WatchViewStub stub;
     private SharedPreferences prefs;
     private Context context;
+    private Handler uiHandler = new Handler();
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -31,18 +33,19 @@ public class DesignClock extends Activity {
         stub = (WatchViewStub) findViewById(R.id.watch_view_stub);
         prefs = PreferenceManager.getDefaultSharedPreferences(this.getApplicationContext());
         context = this;
-        stub.setOnLayoutInflatedListener(new WatchViewStub.OnLayoutInflatedListener() {
-            public void onLayoutInflated(WatchViewStub stub) {
-                clockText = (TextView) stub.findViewById(R.id.clock);
-                dateText = (TextView) stub.findViewById(R.id.date);
+        stub.setOnLayoutInflatedListener(
+                new WatchViewStub.OnLayoutInflatedListener() {
+                    public void onLayoutInflated(WatchViewStub stub) {
+                        clockText = (TextView) stub.findViewById(R.id.clock);
+                        dateText = (TextView) stub.findViewById(R.id.date);
 
-            }
-        });
+                    }
+                }
+        );
         stub.inflate();
 
         new UpdateClock().execute(this);
         stub.setOnClickListener(new View.OnClickListener() {
-
             public void onClick(View v) {
                 Intent myIntent = new Intent(context, Settings.class);
                 myIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -57,36 +60,33 @@ public class DesignClock extends Activity {
         protected Boolean doInBackground(final Context... context) {
             new Timer().scheduleAtFixedRate(new TimerTask(){
                 public void run() {
-                    runOnUiThread(new Runnable(){
-                        public void run() {
-                            Calendar time;
-                            time = Calendar.getInstance();
-                            int hour;
-                            String mode = prefs.getString("mode","12");
-                            if(mode.equals("12")){
-                                hour = time.get(Calendar.HOUR);
-                            }else{
-                                hour = time.get(Calendar.HOUR_OF_DAY);
+                    Calendar time;
+                    time = Calendar.getInstance();
+                    int hour;
+                    String mode = prefs.getString("mode","12");
+                    if(mode.equals("12")){
+                        hour = time.get(Calendar.HOUR);
+                    }else{
+                        hour = time.get(Calendar.HOUR_OF_DAY);
 
-                            }
-                            int minute = time.get(Calendar.MINUTE);
-                            int sec = time.get(Calendar.SECOND);
-                            SimpleDateFormat sdf = new SimpleDateFormat("EEEE");
-                            Date d = new Date();
-                            String day = sdf.format(d);
-                            sdf = new SimpleDateFormat("MM/dd/yyyy");
-                            String date = sdf.format(d);
-                            dateText.setText("Designed Clock");
-                            clockText.setText(hour + ":" + String.format("%02d", minute) + ":" + String.format("%02d", sec));
-                            if(mode.equals("12"))
-                                if(time.get(Calendar.HOUR_OF_DAY) < 12){
-                                    clockText.append(" AM");
-                                }else{
-                                    clockText.append(" PM");
-                                }
-                        }});
+                    }
+                    int minute = time.get(Calendar.MINUTE);
+                    int sec = time.get(Calendar.SECOND);
+                    SimpleDateFormat sdf = new SimpleDateFormat("EEEE");
+                    Date d = new Date();
+                    String day = sdf.format(d);
+                    sdf = new SimpleDateFormat("MM/dd/yyyy");
+                    String date = sdf.format(d);
+                    setText(dateText, "Designed Clock");
+                    setText(clockText, hour + ":" + String.format("%02d", minute) + ":" + String.format("%02d", sec));
+                    if(mode.equals("12"))
+                        if(time.get(Calendar.HOUR_OF_DAY) < 12){
+                            appendText(clockText, " AM");
+                        }else{
+                            appendText(clockText, " PM");
+                        }
                 }
-            }, 0, 500);
+            }, 0, 950);
 
             return true;
         }
@@ -106,5 +106,21 @@ public class DesignClock extends Activity {
 
             return true;
         }
+    }
+
+    private void setText(final TextView tv, final String text){
+        uiHandler.post(new Runnable(){
+            public void run(){
+                tv.setText(text);
+            }
+        });
+    }
+
+    private void appendText(final TextView tv, final String text){
+        uiHandler.post(new Runnable(){
+            public void run(){
+                tv.append(text);
+            }
+        });
     }
 }
