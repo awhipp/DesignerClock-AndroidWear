@@ -7,7 +7,6 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.wearable.view.WatchViewStub;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -34,17 +33,23 @@ public class Settings extends Activity {
         setContentView(R.layout.activity_settings);
         context = this;
 
-        final WatchViewStub stub = (WatchViewStub) findViewById(R.id.watch_view_stub);
-        stub.setOnLayoutInflatedListener(new WatchViewStub.OnLayoutInflatedListener() {
-            public void onLayoutInflated(WatchViewStub stub) {
-                back = (Button) (stub.findViewById(R.id.back_button));
-                standard = (CheckBox) (stub.findViewById(R.id.radio12));
-                military = (CheckBox) (stub.findViewById(R.id.radio24));
-                basic = (CheckBox) (stub.findViewById(R.id.basic_radio));
-                fancy = (CheckBox) (stub.findViewById(R.id.fancy_radio));
-            }
-        });
-        stub.inflate();
+        back = (Button) (findViewById(R.id.back_button));
+        standard = (CheckBox) (findViewById(R.id.radio12));
+        military = (CheckBox) (findViewById(R.id.radio24));
+        basic = (CheckBox) (findViewById(R.id.basic_radio));
+        fancy = (CheckBox) (findViewById(R.id.fancy_radio));
+
+//        final WatchViewStub stub = (WatchViewStub) findViewById(R.id.watch_view_stub);
+//        stub.setOnLayoutInflatedListener(new WatchViewStub.OnLayoutInflatedListener() {
+//            public void onLayoutInflated(WatchViewStub stub) {
+//                back = (Button) (stub.findViewById(R.id.back_button));
+//                standard = (CheckBox) (stub.findViewById(R.id.radio12));
+//                military = (CheckBox) (stub.findViewById(R.id.radio24));
+//                basic = (CheckBox) (stub.findViewById(R.id.basic_radio));
+//                fancy = (CheckBox) (stub.findViewById(R.id.fancy_radio));
+//            }
+//        });
+//        stub.inflate();
 
         prefs = PreferenceManager.getDefaultSharedPreferences(this.getApplicationContext());
         edit = prefs.edit();

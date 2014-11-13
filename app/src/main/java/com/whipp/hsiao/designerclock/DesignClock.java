@@ -3,49 +3,40 @@ package com.whipp.hsiao.designerclock;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
-import android.preference.PreferenceManager;
-import android.support.wearable.view.WatchViewStub;
 import android.view.View;
-import android.widget.TextView;
-
-import java.text.SimpleDateFormat;
+import android.widget.RelativeLayout;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 
 public class DesignClock extends Activity {
 
-    private TextView clockText;
-    private TextView dateText;
-    private WatchViewStub stub;
-    private SharedPreferences prefs;
-    private Context context;
-    private Handler uiHandler = new Handler();
+    ClockView clockView;
+    Context context;
+    Handler uiHandler = new Handler();
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_design_clock);
-        stub = (WatchViewStub) findViewById(R.id.watch_view_stub);
-        prefs = PreferenceManager.getDefaultSharedPreferences(this.getApplicationContext());
+        RelativeLayout layout = (RelativeLayout) findViewById(R.id.layout);
         context = this;
-        stub.setOnLayoutInflatedListener(
-                new WatchViewStub.OnLayoutInflatedListener() {
-                    public void onLayoutInflated(WatchViewStub stub) {
-                        clockText = (TextView) stub.findViewById(R.id.clock);
-                        dateText = (TextView) stub.findViewById(R.id.date);
 
-                    }
-                }
-        );
-        stub.inflate();
 
-        new UpdateClock().execute(this);
-        stub.setOnClickListener(new View.OnClickListener() {
+        Calendar time;
+        time = Calendar.getInstance();
+        int hour = time.get(Calendar.HOUR_OF_DAY);
+        int minute = time.get(Calendar.MINUTE);
+        int sec = time.get(Calendar.SECOND);
+
+        clockView = (com.whipp.hsiao.designerclock.ClockView) findViewById(R.id.draw);
+        clockView.updateView(hour, minute, sec, hour < 12);
+
+
+        layout.setOnClickListener(new View.OnClickListener() {
+
             public void onClick(View v) {
                 Intent myIntent = new Intent(context, Settings.class);
                 myIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -53,40 +44,31 @@ public class DesignClock extends Activity {
                 new endActivity().execute(context);
             }
         });
+
+
+        new UpdateClock().execute(this);
+
+
     }
+
 
     private class UpdateClock extends AsyncTask<Context, Integer, Boolean> {
 
-        protected Boolean doInBackground(final Context... context) {
+        protected Boolean doInBackground(Context... context) {
             new Timer().scheduleAtFixedRate(new TimerTask(){
                 public void run() {
-                    Calendar time;
-                    time = Calendar.getInstance();
-                    int hour;
-                    String mode = prefs.getString("mode","12");
-                    if(mode.equals("12")){
-                        hour = time.get(Calendar.HOUR);
-                    }else{
-                        hour = time.get(Calendar.HOUR_OF_DAY);
-
-                    }
-                    int minute = time.get(Calendar.MINUTE);
-                    int sec = time.get(Calendar.SECOND);
-                    SimpleDateFormat sdf = new SimpleDateFormat("EEEE");
-                    Date d = new Date();
-                    String day = sdf.format(d);
-                    sdf = new SimpleDateFormat("MM/dd/yyyy");
-                    String date = sdf.format(d);
-                    setText(dateText, "Designed Clock");
-                    setText(clockText, hour + ":" + String.format("%02d", minute) + ":" + String.format("%02d", sec));
-                    if(mode.equals("12"))
-                        if(time.get(Calendar.HOUR_OF_DAY) < 12){
-                            appendText(clockText, " AM");
-                        }else{
-                            appendText(clockText, " PM");
+                    final Calendar time = Calendar.getInstance();
+                    final int hour = time.get(Calendar.HOUR_OF_DAY);
+                    final int minute = time.get(Calendar.MINUTE);
+                    final int sec = time.get(Calendar.SECOND);
+                    uiHandler.post(new Runnable(){
+                       public void run(){
+                           clockView.updateView(hour, minute, sec, hour < 12);
                         }
+                    });
+
                 }
-            }, 0, 950);
+            }, 0, 500);
 
             return true;
         }
@@ -106,21 +88,5 @@ public class DesignClock extends Activity {
 
             return true;
         }
-    }
-
-    private void setText(final TextView tv, final String text){
-        uiHandler.post(new Runnable(){
-            public void run(){
-                tv.setText(text);
-            }
-        });
-    }
-
-    private void appendText(final TextView tv, final String text){
-        uiHandler.post(new Runnable(){
-            public void run(){
-                tv.append(text);
-            }
-        });
     }
 }

@@ -8,8 +8,8 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
-import android.support.wearable.view.WatchViewStub;
 import android.view.View;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.text.SimpleDateFormat;
@@ -22,7 +22,6 @@ public class MainClock extends Activity {
 
     private TextView clockText;
     private TextView dateText;
-    private WatchViewStub stub;
     private SharedPreferences prefs;
     private Context context;
     private Handler uiHandler = new Handler();
@@ -30,7 +29,7 @@ public class MainClock extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_clock);
-        stub = (WatchViewStub) findViewById(R.id.watch_view_stub);
+        RelativeLayout layout = (RelativeLayout) findViewById(R.id.layout);
         prefs = PreferenceManager.getDefaultSharedPreferences(this.getApplicationContext());
 
         if (prefs.getString("clock", "basic").equals("fancy")){
@@ -39,17 +38,11 @@ public class MainClock extends Activity {
         }
 
         context = this;
-        stub.setOnLayoutInflatedListener(new WatchViewStub.OnLayoutInflatedListener() {
-            public void onLayoutInflated(WatchViewStub stub) {
-                clockText = (TextView) stub.findViewById(R.id.clock);
-                dateText = (TextView) stub.findViewById(R.id.date);
-
-            }
-        });
-        stub.inflate();
+        clockText = (TextView) findViewById(R.id.clock);
+        dateText = (TextView) findViewById(R.id.date);
 
         new UpdateClock().execute(this);
-        stub.setOnClickListener(new View.OnClickListener() {
+        layout.setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View v) {
                 Intent myIntent = new Intent(context, Settings.class);
